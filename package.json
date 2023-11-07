@@ -1,8 +1,11 @@
 {
-  "name": "@react-native-picker/picker",
-  "version": "2.5.1",
+  "name": "@react-native-oh-library/picker",
+  "version": "2.5.1-0.0.1",
   "homepage": "https://github.com/react-native-picker/picker#readme",
   "description": "React Native Picker for iOS, Android, macOS, and Windows",
+  "harmony": {
+    "alias": "@react-native-picker/picker"
+  },
   "main": "dist/commonjs/index.js",
   "module": "dist/module/index.js",
   "types": "./typings/index.d.ts",
@@ -17,7 +20,7 @@
     "android": "react-native run-android",
     "macos": "cd example && react-native run-macos",
     "test": "yarn validate:eslint && yarn validate:flow && yarn validate:typescript && yarn test:jest",
-    "validate:eslint": "eslint 'js/**/*.js' 'example/**/*.js'",
+    "validate:eslint": "eslint js/**/*.js example/**/*.js",
     "validate:flow": "flow check",
     "validate:typescript": "tsc --project ./",
     "test:jest": "jest js/",
@@ -132,10 +135,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/react-native-picker/picker.git"
+    "url": "https://github.com/react-native-oh-library/picker.git"
   },
   "publishConfig": {
-    "access": "public"
+    "registry": "https://npm.pkg.github.com"
   },
   "files": [
     "js",
@@ -146,6 +149,7 @@
     "ios",
     "macos",
     "android",
+    "harmony",
     "typings",
     "windows",
     "RNCPicker.podspec"
