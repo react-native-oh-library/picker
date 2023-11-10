@@ -17,6 +17,7 @@ import PickerAndroid from './PickerAndroid';
 import PickerIOS from './PickerIOS';
 import PickerWindows from './PickerWindows';
 import PickerMacOS from './PickerMacOS';
+import PickerHarmony from './PickerHarmony';
 
 import type {TextStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 import type {ColorValue} from 'react-native/Libraries/StyleSheet/StyleSheet';
@@ -184,6 +185,10 @@ class Picker extends React.Component<PickerProps> {
     } else if (Platform.OS === 'windows') {
       return (
         <PickerWindows {...this.props}>{this.props.children}</PickerWindows>
+      );
+    } else if (Platform.OS === 'harmony') {
+      return (
+        <PickerHarmony {...this.props}>{this.props.children}</PickerHarmony>
       );
     } else {
       return null;
