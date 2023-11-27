@@ -1,5 +1,5 @@
-import {Picker, PickerProps, PickerItemProps} from './Picker';
-import {PickerIOS} from './PickerIOS';
+import {Picker, PickerProps, PickerItemProps} from '@react-native-picker/picker/typings/Picker';
+// import {PickerIOS} from '@react-native-picker/picker/typings/PickerIOS';
 import {PickerHarmony} from "./PickerHarmony";
 
-export {Picker, PickerIOS, PickerHarmony, PickerProps, PickerItemProps};
+export {Picker, PickerHarmony, PickerProps, PickerItemProps};

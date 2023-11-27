@@ -1,6 +1,6 @@
 {
-  "name": "@react-native-oh-library/picker",
-  "version": "2.5.1-0.0.1",
+  "name": "@react-native-oh-library/picker-openharmony",
+  "version": "2.5.1-0.1.1",
   "homepage": "https://github.com/react-native-picker/picker#readme",
   "description": "React Native Picker for iOS, Android, macOS, and Windows",
   "harmony": {
@@ -52,6 +52,9 @@
     "react-native": ">=0.57"
   },
   "private": false,
+  "dependencies": {
+    "@react-native-picker/picker": "^2.5.1"
+  },
   "devDependencies": {
     "@babel/core": "^7.6.2",
     "@babel/runtime": "^7.6.2",
@@ -119,11 +122,6 @@
       }
     }
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged --pattern '**/*.*(js|jsx)'"
-    }
-  },
   "jest": {
     "preset": "react-native",
     "setupFilesAfterEnv": [
@@ -146,13 +144,8 @@
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
-    "ios",
-    "macos",
-    "android",
     "harmony",
-    "typings",
-    "windows",
-    "RNCPicker.podspec"
+    "typings"
   ],
   "react-native-builder-bob": {
     "source": "js",

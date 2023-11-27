@@ -13,10 +13,10 @@
 import * as React from 'react';
 import {Platform} from 'react-native';
 
-import PickerAndroid from './PickerAndroid';
-import PickerIOS from './PickerIOS';
-import PickerWindows from './PickerWindows';
-import PickerMacOS from './PickerMacOS';
+import PickerAndroid from '@react-native-picker/picker/js/PickerAndroid';
+import PickerIOS from '@react-native-picker/picker/js/PickerIOS';
+import PickerWindows from '@react-native-picker/picker/js/PickerWindows';
+import PickerMacOS from '@react-native-picker/picker/js/PickerMacOS';
 import PickerHarmony from './PickerHarmony';
 
 import type {TextStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';

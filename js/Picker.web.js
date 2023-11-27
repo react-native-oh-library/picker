@@ -11,7 +11,7 @@ import {forwardRef} from 'react';
 import type {ViewProps} from 'react-native-web/src/exports/View/types';
 import type {GenericStyleProp} from 'react-native-web/src/types';
 import type {TextStyle} from 'react-native-web/src/exports/Text/types';
-import PickerItem from './PickerItem';
+import PickerItem from '@react-native-picker/picker/js/PickerItem';
 
 type PickerProps = {
   ...ViewProps,

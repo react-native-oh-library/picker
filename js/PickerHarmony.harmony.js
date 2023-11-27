@@ -10,16 +10,6 @@
  */
 
 'use strict';
-// import * as React from 'react';
-// import {processColor, StyleSheet, View} from 'react-native';
-// import RNCPickerNativeComponent from './RNCPickerNativeComponent';
-// import type {RNCPickerIOSType} from './RNCPickerNativeComponent';
-// import type {ProcessedColorValue} from 'react-native/Libraries/StyleSheet/processColor';
-// import type {ColorValue} from 'react-native/Libraries/StyleSheet/StyleSheet';
-// import type {ViewProps} from 'react-native/Libraries/Components/View/ViewPropTypes';
-// import type {TextStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
-// import type {SyntheticEvent} from 'react-native/Libraries/Types/CoreEventTypes';
-// import type {Element, ElementRef, ChildrenArray} from 'react';
 
 import * as React from 'react';
 import {processColor, StyleSheet, View} from 'react-native';
