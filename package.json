@@ -1,5 +1,5 @@
 {
-  "name": "@react-native-oh-library/picker-openharmony",
+  "name": "@react-native-oh-library/picker",
   "version": "2.5.1-0.1.1",
   "homepage": "https://github.com/react-native-picker/picker#readme",
   "description": "React Native Picker for iOS, Android, macOS, and Windows",
@@ -53,7 +53,7 @@
   },
   "private": false,
   "dependencies": {
-    "@react-native-picker/picker": "^2.5.1"
+    "@react-native-picker/picker": "2.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
