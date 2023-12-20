@@ -116,11 +116,6 @@
       }
     }
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged --pattern '**/*.*(js|jsx)'"
-    }
-  },
   "jest": {
     "preset": "react-native",
     "setupFilesAfterEnv": [
