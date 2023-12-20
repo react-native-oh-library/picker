@@ -1,15 +1,19 @@
 /**
- *  MIT License
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * MIT License
+ *
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANT KIND, EXPRESS OR
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -60,7 +64,8 @@ export struct RNCPicker {
   ctx!: RNOHContext
   tag: number = 0
   @State descriptor: RNCPickerDescriptor = {} as RNCPickerDescriptor
-  private unregisterDescriptorChangesListener?: ()=> void = undefined
+  private unregisterDescriptorChangesListener?: () => void = undefined
+  private cleanupCommandCallback?: () => void = undefined
   @State range: string[] = []  // 由label组成，label：Displayed value on the Picker Item
   @State selected: number = 0
   @State value: string | undefined = ''  // Actual value on the Picker Item
@@ -72,6 +77,15 @@ export struct RNCPicker {
         this.descriptor = (newDescriptor as RNCPickerDescriptor)
       }
     )
+    this.cleanupCommandCallback = this.ctx.componentCommandReceiver.registerCommandCallback(
+      this.tag,
+      (command, args:(number|null)[]) => {
+        if (command === 'setNativeSelectedIndex') {
+          Logger.info(TAG, `CommandCallback, setNativeSelectedIndex: ${args[0]}`)
+          if (args) this.selected = args[0] as number;
+        }
+      }
+    )
     Logger.info(TAG, `RNCPickerDescriptor, ${JSON.stringify(this.descriptor.props)}`)
     this.range = this.getRange(this.descriptor.props.items)
     this.valueMap = this.getValueMap(this.descriptor.props.items)
@@ -80,6 +94,7 @@ export struct RNCPicker {
   }
   aboutToDisappear() {
     this.unregisterDescriptorChangesListener?.()
+    this.cleanupCommandCallback?.()
   }
 
   getRange(items: PickerItems[]): string[] {
@@ -127,24 +142,19 @@ export struct RNCPicker {
   }
 
   _onChange(value: string | string[], index: number | number[]): void {
-    let newValue: string | undefined = '';
-    let newIndex: number = 0
-    if (this.value === value || this.selected === index) return;
     if (typeof value === 'string') {
-      // this.value = this.valueMap.get(value)
-      newValue = this.valueMap.get(value)
+      this.value = this.valueMap.get(value)
     }
     if (typeof index === 'number') {
-      // this.selected = index
-      newIndex = index
+      this.selected = index
     }
     this.ctx.rnInstance.emitComponentEvent(
       this.descriptor.tag,
       PICKER_TYPE,
       {
         type: "change",
-        newValue: newValue,
-        newIndex: newIndex
+        newValue: this.value,
+        newIndex: this.selected
       }
     )
   }
@@ -152,7 +162,7 @@ export struct RNCPicker {
   build() {
     RNViewBase({ ctx: this.ctx, tag: this.tag }) {
       TextPicker({ range: this.range, // 选择器的数据选择列表
-        // selected: this.descriptor.props.selectedIndex, // 设置默认选中项在数组中的索引值
+        // selected: this.selected, // 设置默认选中项在数组中的索引值
         value: this.value, // 设置默认选中项的值，优先级低于selected
       })
         // .defaultPickerItemHeight() // 设置Picker各选择项的高度
