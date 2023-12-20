@@ -1,5 +1,5 @@
 {
-  "name": "@react-native-picker/picker",
+  "name": "@react-native-oh-tpl/picker",
   "version": "2.6.1",
   "homepage": "https://github.com/react-native-picker/picker#readme",
   "description": "React Native Picker for iOS, Android, macOS, and Windows",

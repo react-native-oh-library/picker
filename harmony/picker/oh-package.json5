@@ -1,0 +1,12 @@
+{
+  "license": "MIT",
+  "devDependencies": {
+    "rnoh": "file:../rnoh"
+  },
+  "author": "Huawei",
+  "name": "rnoh-picker",
+  "description": "picker for HarmonyOS",
+  "main": "index.ets",
+  "version": "0.0.1",
+  "dependencies": {}
+}
