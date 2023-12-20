@@ -1,12 +1,15 @@
 {
-  "name": "@react-native-picker/picker",
-  "version": "2.6.1",
+  "name": "@react-native-oh-library/picker",
+  "version": "2.6.1-0.0.1",
   "homepage": "https://github.com/react-native-picker/picker#readme",
   "description": "React Native Picker for iOS, Android, macOS, and Windows",
   "main": "dist/commonjs/index.js",
   "module": "dist/module/index.js",
   "types": "./typings/index.d.ts",
   "react-native": "js/index.js",
+  "harmony": {
+    "alias": "@react-native-picker/picker"
+  },
   "scripts": {
     "prepare": "bob build",
     "build": "bob build",
@@ -116,11 +119,6 @@
       }
     }
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged --pattern '**/*.*(js|jsx)'"
-    }
-  },
   "jest": {
     "preset": "react-native",
     "setupFilesAfterEnv": [
@@ -132,7 +130,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/react-native-picker/picker.git"
+    "url": "https://github.com/react-native-oh-library/picker.git"
   },
   "publishConfig": {
     "access": "public"
@@ -146,6 +144,7 @@
     "ios",
     "macos",
     "android",
+    "harmony",
     "typings",
     "windows",
     "react-native.config.js",

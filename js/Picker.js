@@ -17,6 +17,7 @@ import PickerAndroid from './PickerAndroid';
 import PickerIOS from './PickerIOS';
 import PickerWindows from './PickerWindows';
 import PickerMacOS from './PickerMacOS';
+import PickerHarmony from './PickerHarmony';
 
 import type {TextStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 import type {ColorValue} from 'react-native/Libraries/StyleSheet/StyleSheet';
@@ -185,6 +186,10 @@ class Picker extends React.Component<PickerProps> {
       return (
         <PickerWindows {...this.props}>{this.props.children}</PickerWindows>
       );
+    } else if (Platform.OS === 'harmony') {
+      /* $FlowFixMe(>=0.81.0 site=react_native_ios_fb) This suppression was
+       * added when renaming suppression sites. */
+      return <PickerHarmony {...this.props}>{this.props.children}</PickerHarmony>;
     } else {
       return null;
     }
