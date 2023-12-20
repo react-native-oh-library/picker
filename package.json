@@ -52,6 +52,9 @@
     "react-native": ">=0.57"
   },
   "private": false,
+  "dependencies": {
+    "@react-native-picker/picker": "2.6.1"
+  },
   "devDependencies": {
     "@babel/core": "^7.6.2",
     "@babel/runtime": "^7.6.2",
