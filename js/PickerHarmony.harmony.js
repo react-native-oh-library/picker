@@ -1,9 +1,11 @@
-/** Copyright (c) Facebook, Inc. and its affiliates.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * This is a controlled component version of RNCPickerIOS
+ *
+ * This is a controlled component version of RNCPickerHarmony
  *
  * @format
  * @flow
@@ -13,9 +15,9 @@
 
 import * as React from 'react';
 import {processColor, StyleSheet, View} from 'react-native';
-import HarmonyPickerNativeComponent, {
+import RNCPickerNativeComponent, {
   Commands as HarmonyPickerCommands,
-} from './HarmonyPickerNativeComponent';
+} from '@react-native-picker/picker/js/RNCPickerNativeComponent';
 import type {SyntheticEvent} from 'react-native/Libraries/Types/CoreEventTypes';
 import type {ViewProps} from 'react-native/Libraries/Components/View/ViewPropTypes';
 import type {
@@ -30,39 +32,48 @@ type PickerHarmonyChangeEvent = SyntheticEvent<
     newIndex: number,
   |}>,
 >;
-type PickerHarmonyItemType = $ReadOnly<{|
+
+type RNCPickerHarmonyItemType = $ReadOnly<{|
   label: ?Label,
   value: ?(number | string),
   textColor: ?ColorValue,
   testID: ?string,
 |}>;
+
 type Label = Stringish | number;
+
 type Props = $ReadOnly<{|
   ...ViewProps,
+  // $FlowFixMe
   children: ChildrenArray<Element<typeof PickerHarmonyItem>>,
   itemStyle?: ?TextStyleProp,
   numberOfLines: ?number,
   onChange?: ?(event: PickerHarmonyChangeEvent) => mixed,
   onValueChange?: ?(itemValue: string | number, itemIndex: number) => mixed,
   selectedValue: ?(number | string),
-  selectionColor: ?ColorValue,
+  selectionColor: ?string,
   themeVariant: ?string,
 |}>;
+
 type ItemProps = $ReadOnly<{|
   label: ?Label,
   value?: ?(number | string),
   color?: ?ColorValue,
   testID?: ?string,
 |}>;
+
 type CallbackRef<T> = (T) => mixed;
 type ObjectRef<T> = {current: T, ...};
+
 type Ref<T> = CallbackRef<T> | ObjectRef<T>;
+
 /**
  * Constructs a new ref that forwards new values to each of the given refs. The
  * given refs will always be invoked in the order that they are supplied.
+ *
  * WARNING: A known problem of merging refs using this approach is that if any
  * of the given refs change, the returned callback ref will also be changed. If
- * the returned callback ref is supplied as a 'ref' to a React element, this may
+ * the returned callback ref is supplied as a `ref` to a React element, this may
  * lead to problems with the given refs being invoked more times than desired.
  */
 function useMergeRefs<T>(...refs: $ReadOnlyArray<?Ref<T>>): CallbackRef<T> {
@@ -81,17 +92,20 @@ function useMergeRefs<T>(...refs: $ReadOnlyArray<?Ref<T>>): CallbackRef<T> {
     [...refs], // eslint-disable-line react-hooks/exhaustive-deps
   );
 }
-const PickerHarmonyItem: PickerHarmonyItemType = (props: ItemProps): null => {
+
+// $FlowFixMe
+const PickerHarmonyItem: RNCPickerHarmonyItemType = (props: ItemProps): null => {
   return null;
 };
+
 const PickerHarmonyWithForwardedRef: React.AbstractComponent<
   Props,
-  React.ElementRef<typeof HarmonyPickerNativeComponent>,
+  React.ElementRef<typeof RNCPickerNativeComponent>,
 > = React.forwardRef(function PickerHarmony(props, forwardedRef): React.Node {
   const {
     children,
-    selectionColor,
     selectedValue,
+    selectionColor,
     themeVariant,
     testID,
     itemStyle,
@@ -100,40 +114,52 @@ const PickerHarmonyWithForwardedRef: React.AbstractComponent<
     onValueChange,
     style,
   } = props;
+
   const nativePickerRef = React.useRef<React.ElementRef<
-    typeof HarmonyPickerNativeComponent,
+    typeof RNCPickerNativeComponent,
   > | null>(null);
+
+  // $FlowFixMe
   const ref = useMergeRefs(nativePickerRef, forwardedRef);
+
   const [nativeSelectedIndex, setNativeSelectedIndex] = React.useState({
     value: null,
   });
+
   const [items, selectedIndex] = React.useMemo(() => {
     // eslint-disable-next-line no-shadow
     let selectedIndex = 0;
     // eslint-disable-next-line no-shadow
-    const items = React.Children.toArray(children).map((child, index) => {
-      if (child === null) {
-        return null;
-      }
-      if (String(child.props.value) === String(selectedValue)) {
-        selectedIndex = index;
-      }
-      return {
-        value: String(child.props.value),
-        label: String(child.props.label),
-        textColor: processColor(child.props.color),
-        testID: child.props.testID,
-      };
-    });
+    const items = React.Children.toArray<$FlowFixMe>(children).map(
+      (child, index) => {
+        if (child === null) {
+          return null;
+        }
+        if (String(child.props.value) === String(selectedValue)) {
+          selectedIndex = index;
+        }
+        return {
+          value: String(child.props.value),
+          label: String(child.props.label),
+          textColor: processColor(child.props.color),
+          testID: child.props.testID,
+        };
+      },
+    );
     return [items, selectedIndex];
   }, [children, selectedValue]);
+
   let parsedNumberOfLines = Math.round(numberOfLines ?? 1);
   if (parsedNumberOfLines < 1) {
     parsedNumberOfLines = 1;
   }
+
   React.useLayoutEffect(() => {
     let jsValue = 0;
-    React.Children.toArray(children).forEach(function (child, index) {
+    React.Children.toArray<$FlowFixMe>(children).forEach(function (
+      child: $FlowFixMe,
+      index: number,
+    ) {
       if (String(child.props.value) === String(selectedValue)) {
         jsValue = index;
       }
@@ -157,30 +183,34 @@ const PickerHarmonyWithForwardedRef: React.AbstractComponent<
       }
     }
   }, [selectedValue, nativeSelectedIndex, children]);
+
   const _onChange = React.useCallback(
-    (event) => {
+    (event: $FlowFixMe) => {
       onChange?.(event);
       onValueChange?.(event.nativeEvent.newValue, event.nativeEvent.newIndex);
       setNativeSelectedIndex({value: event.nativeEvent.newIndex});
     },
     [onChange, onValueChange],
   );
+
   return (
     <View style={style}>
-      <HarmonyPickerNativeComponent
+      <RNCPickerNativeComponent
         ref={ref}
         themeVariant={themeVariant}
         testID={testID}
         style={[styles.pickerHarmony, itemStyle]}
+        // $FlowFixMe
         items={items}
         onChange={_onChange}
         numberOfLines={parsedNumberOfLines}
         selectedIndex={selectedIndex}
-        selectionColor={selectionColor}
+        selectionColor={processColor(selectionColor)}
       />
     </View>
   );
 });
+
 const styles = StyleSheet.create({
   pickerHarmony: {
     // The picker will conform to whatever width is given, but we do
@@ -189,5 +219,8 @@ const styles = StyleSheet.create({
     height: 216,
   },
 });
+
+// $FlowFixMe
 PickerHarmonyWithForwardedRef.Item = PickerHarmonyItem;
+
 export default PickerHarmonyWithForwardedRef;

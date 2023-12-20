@@ -54,7 +54,7 @@ type PickerItemProps = $ReadOnly<{|
  * Individual selectable item in a Picker.
  */
 class PickerItem extends React.Component<PickerItemProps> {
-  render() {
+  render(): React.Node {
     // The items are not rendered directly
     throw null;
   }
@@ -187,9 +187,9 @@ class Picker extends React.Component<PickerProps> {
         <PickerWindows {...this.props}>{this.props.children}</PickerWindows>
       );
     } else if (Platform.OS === 'harmony') {
-      return (
-        <PickerHarmony {...this.props}>{this.props.children}</PickerHarmony>
-      );
+      /* $FlowFixMe(>=0.81.0 site=react_native_ios_fb) This suppression was
+       * added when renaming suppression sites. */
+      return <PickerHarmony {...this.props}>{this.props.children}</PickerHarmony>;
     } else {
       return null;
     }

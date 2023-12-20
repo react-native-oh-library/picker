@@ -1,15 +1,19 @@
 /**
- *  MIT License
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * MIT License
+ *
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANT KIND, EXPRESS OR
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -18,69 +22,79 @@
  * SOFTWARE.
  */
 
-import{
+import {
   Descriptor,
   RNOHContext,
   ViewBaseProps,
   RNViewBase,
-  ComponentBuilderContext,
   ColorSegments,
   convertColorSegmentsToString,
 } from 'rnoh'
-import{ stringToAlignment, stringToFontStyle} from './conversion'
+
+import { stringToAlignment, stringToFontStyle } from './conversion'
 import Logger from './Logger'
 
-const TAG:string = "[RNOH] RNCHarmonyPicker"
-
-export const HARMONY_PICKER_TYPE:string = "RNCHarmonyPicker"
-
+const TAG:string = "[RNOH] RNCPicker"
+export const PICKER_TYPE:string = "RNCPicker"
 interface PickerItems {
   label : string,
   value : string,
   textColor : ColorSegments
+  testID: string
 }
 
-export interface HarmonyPickerProps extends ViewBaseProps {
+export interface PickerProps extends ViewBaseProps {
   items : PickerItems[],
   selectedIndex ?: number,
   selectionColor ?: ColorSegments, // 未实现，选中项的背景颜色。现在作为选中项的字体颜色。
-  color?: ColorSegments, textAlign?: string, // 未实现， 选项文本居中
+  color?: ColorSegments,
+  textAlign?: string, // 未实现， 选项文本居中
   numberOfLines?: number, // 未实现，文本行数
   fontSize?: number,
   fontWeight?: string,
   fontStyle?: string,
   fontFamily?: string,
   themeVariant?: string // 未实现，明暗主题变换
+  testID?: string
 }
-
-export type RNCHarmonyPickerDescriptor = Descriptor<"RNCHarmonyPicker", HarmonyPickerProps>
+export type RNCPickerDescriptor = Descriptor<"RNCPicker", PickerProps>
 
 @Component
-export struct RNCHarmonyPicker {
+export struct RNCPicker {
   ctx!: RNOHContext
   tag: number = 0
-  @BuilderParam buildCustomComponent: (componentBuilderContext: ComponentBuilderContext) => void
-  @State descriptor: RNCHarmonyPickerDescriptor = {} as RNCHarmonyPickerDescriptor
-  private unregisterDescriptorChangesListener?: ()=> void = undefined
-  @State range: string[] = [] // 由label组成，label：Displayed value on the Picker Item
+  @State descriptor: RNCPickerDescriptor = {} as RNCPickerDescriptor
+  private unregisterDescriptorChangesListener?: () => void = undefined
+  private cleanupCommandCallback?: () => void = undefined
+  @State range: string[] = []  // 由label组成，label：Displayed value on the Picker Item
   @State selected: number = 0
-  @State value: string | undefined = '' // Actual value on the Picker Item
+  @State value: string | undefined = ''  // Actual value on the Picker Item
   private valueMap: Map<string, string> = new Map()
 
-  aboutToAppear() { this.descriptor = this.ctx.descriptorRegistry.getDescriptor<RNCHarmonyPickerDescriptor>(this.tag)
+  aboutToAppear() { this.descriptor = this.ctx.descriptorRegistry.getDescriptor<RNCPickerDescriptor>(this.tag)
     this.unregisterDescriptorChangesListener = this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
       (newDescriptor) => {
-        this.descriptor = (newDescriptor as RNCHarmonyPickerDescriptor)
+        this.descriptor = (newDescriptor as RNCPickerDescriptor)
       }
     )
-    Logger.info(TAG, `RNCHarmonyPickerDescriptor, ${JSON.stringify(this.descriptor.props)}`)
+    this.cleanupCommandCallback = this.ctx.componentCommandReceiver.registerCommandCallback(
+      this.tag,
+      (command, args:(number|null)[]) => {
+        if (command === 'setNativeSelectedIndex') {
+          Logger.info(TAG, `CommandCallback, setNativeSelectedIndex: ${args[0]}`)
+          if (args) this.selected = args[0] as number;
+        }
+      }
+    )
+    Logger.info(TAG, `RNCPickerDescriptor, ${JSON.stringify(this.descriptor.props)}`)
     this.range = this.getRange(this.descriptor.props.items)
     this.valueMap = this.getValueMap(this.descriptor.props.items)
     this.selected = this.descriptor.props.selectedIndex ? this.descriptor.props.selectedIndex : 0
-  }
 
+  }
   aboutToDisappear() {
     this.unregisterDescriptorChangesListener?.()
+    this.cleanupCommandCallback?.()
   }
 
   getRange(items: PickerItems[]): string[] {
@@ -112,7 +126,7 @@ export struct RNCHarmonyPicker {
         style: this.descriptor.props.fontStyle ? stringToFontStyle(this.descriptor.props.fontStyle) : FontStyle.Normal,
         family: this.descriptor.props.fontFamily ? this.descriptor.props.fontFamily : 'Arial'
       },
-    }
+    };
   }
 
   getSelectionStyle(): PickerTextStyle {
@@ -124,10 +138,10 @@ export struct RNCHarmonyPicker {
         style: this.descriptor.props.fontStyle ? stringToFontStyle(this.descriptor.props.fontStyle) : FontStyle.Normal,
         family: this.descriptor.props.fontFamily ? this.descriptor.props.fontFamily : 'Arial'
       },
-    }
+    };
   }
 
-  _onChange(value: string | string[], index: number | number[]) {
+  _onChange(value: string | string[], index: number | number[]): void {
     if (typeof value === 'string') {
       this.value = this.valueMap.get(value)
     }
@@ -136,7 +150,7 @@ export struct RNCHarmonyPicker {
     }
     this.ctx.rnInstance.emitComponentEvent(
       this.descriptor.tag,
-      HARMONY_PICKER_TYPE,
+      PICKER_TYPE,
       {
         type: "change",
         newValue: this.value,
@@ -148,8 +162,8 @@ export struct RNCHarmonyPicker {
   build() {
     RNViewBase({ ctx: this.ctx, tag: this.tag }) {
       TextPicker({ range: this.range, // 选择器的数据选择列表
-        selected: this.descriptor.props.selectedIndex, // 设置默认选中项在数组中的索引值
-        // value: this.value, // 设置默认选中项的值，优先级低于selected
+        // selected: this.selected, // 设置默认选中项在数组中的索引值
+        value: this.value, // 设置默认选中项的值，优先级低于selected
       })
         // .defaultPickerItemHeight() // 设置Picker各选择项的高度
         .disappearTextStyle(this.getTextStyle()) // 设置所有选项中最上和最下两个选项的文本颜色、字号、字体粗细

@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -13,7 +13,7 @@
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANT KIND, EXPRESS OR
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -31,36 +31,36 @@
 using namespace facebook;
 namespace rnoh {
 
-enum HarmonyPickerEventType{
+enum PickerEventType{
     ON_CHANGE = 0
 };
 
-HarmonyPickerEventType getHarmonyPickerEventType(ArkJS &arkJs, napi_value eventObject) {
+PickerEventType getPickerEventType(ArkJS &arkJs, napi_value eventObject) {
     auto eventType = arkJs.getString(arkJs.getObjectProperty(eventObject, "type"));
     if(eventType == "change") {
-        return HarmonyPickerEventType::ON_CHANGE;
+        return PickerEventType::ON_CHANGE;
     } else {
         throw std::runtime_error("Unknown Picker event type");
     }
 }
 
-class HarmonyPickerEventEmitRequestHandler : public EventEmitRequestHandler {
+class PickerEventEmitRequestHandler : public EventEmitRequestHandler {
 public:  
     void handleEvent(EventEmitRequestHandler::Context const &ctx) override{
-        if (ctx.eventName != "RNCHarmonyPicker") {
+        if (ctx.eventName != "RNCPicker") {
             return;
         }
         ArkJS arkJs(ctx.env);
-        auto eventEmitter = ctx.shadowViewRegistry->getEventEmitter<react::RNCHarmonyPickerEventEmitter>(ctx.tag);
+        auto eventEmitter = ctx.shadowViewRegistry->getEventEmitter<react::RNCPickerEventEmitter>(ctx.tag);
         if (eventEmitter == nullptr) { 
             return;
         }
-        auto eventType = getHarmonyPickerEventType( arkJs,ctx.payload);
+        auto eventType = getPickerEventType( arkJs,ctx.payload);
         switch (eventType) {
-            case HarmonyPickerEventType::ON_CHANGE: {
+            case PickerEventType::ON_CHANGE: {
                 std::string newValue = arkJs.getString(arkJs.getObjectProperty(ctx.payload, "newValue"));
                 int newIndex = arkJs.getInteger(arkJs.getObjectProperty(ctx.payload, "newIndex"));
-                react::RNCHarmonyPickerEventEmitter::OnChange event =  {newValue, newIndex};
+                react::RNCPickerEventEmitter::OnChange event =  {newValue, newIndex};
                 eventEmitter->onChange(event);
                 break;
             }

@@ -22,22 +22,32 @@
  * SOFTWARE.
  */
 
-export function stringToAlignment(alignment:string){
-  switch (alignment) {
-    case "center":
-      return TextAlign.Center
-    case "right":
-      return TextAlign.End
-    case "justified":
-      return TextAlign.JUSTIFY
-    default:
-      return TextAlign.Start
-  }
-}
+#include "RNOH/Package.h"
+#include "ComponentDescriptor.h"
+#include "PickerJSIBinder.h"
+#include "PickerNapiBinder.h"
+#include "PickerEventEmitRequestHandler.h"
 
-export function stringToFontStyle(style:string|undefined):FontStyle{
-  if(style==="italic"){
-    return FontStyle.Italic
-  }
-  return FontStyle.Normal;
-}
+namespace rnoh {
+    
+class PickerPackage : public Package {
+public:
+    PickerPackage(Package::Context ctx) : Package(ctx) {}
+    
+    std::vector<facebook::react::ComponentDescriptorProvider> createComponentDescriptorProviders() override {
+        return {facebook::react::concreteComponentDescriptorProvider<facebook::react::RNCPickerComponentDescriptor>()};
+    }
+    
+    ComponentNapiBinderByString createComponentNapiBinderByName() override {
+        return{{"RNCPicker", std::make_shared<PickerNapiBinder>()}};
+    };
+
+    ComponentJSIBinderByString createComponentJSIBinderByName() override {
+        return {{"RNCPicker", std::make_shared<PickerJSIBinder>()}};
+    };
+
+    EventEmitRequestHandlers createEventEmitRequestHandlers() override {
+        return{std::make_shared<PickerEventEmitRequestHandler>()};
+    }
+};
+} //namespace rnoh

@@ -22,4 +22,4 @@
  * SOFTWARE.
  */
 
-export * from './src/main/ets/HarmonyPicker'
+export * from './src/main/ets/RNCPicker'
