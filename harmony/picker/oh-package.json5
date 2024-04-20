@@ -5,9 +5,9 @@
   },
   "author": "Huawei",
   "name": "@react-native-oh-tpl/picker",
-  "version": "2.6.1-0.1.5",
   "description": "picker for HarmonyOS",
   "main": "index.ets",
+  "version": "2.6.1-0.2.0",
   "dependencies": {
     "@rnoh/react-native-openharmony": "file:../react_native_openharmony"
   }

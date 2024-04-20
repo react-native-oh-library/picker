@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (C) 2023 Huawei Device Co., Ltd.
@@ -22,15 +22,18 @@
  * SOFTWARE.
  */
 
-#pragma once
+import { RNPackage } from '@rnoh/react-native-openharmony/ts';
+import type {
+  DescriptorWrapperFactoryByDescriptorTypeCtx,
+  DescriptorWrapperFactoryByDescriptorType
+} from '@rnoh/react-native-openharmony/ts';
+import { RNC } from "@rnoh/react-native-openharmony/generated/ts"
 
-#include "ShadowNodes.h"
-#include <react/renderer/core/ConcreteComponentDescriptor.h>
+export class RNCPickerPackage extends RNPackage {
 
-namespace facebook{
-namespace react {
- 
-using RNCPickerComponentDescriptor = ConcreteComponentDescriptor<RNCPickerShadowNode>;
-
-} // namespace
-} // namespace facebook
+  createDescriptorWrapperFactoryByDescriptorType(ctx: DescriptorWrapperFactoryByDescriptorTypeCtx): DescriptorWrapperFactoryByDescriptorType {
+    return {
+      [RNC.RNCPicker.NAME]: (ctx) => new RNC.RNCPicker.DescriptorWrapper(ctx.descriptor)
+    }
+  }
+}
