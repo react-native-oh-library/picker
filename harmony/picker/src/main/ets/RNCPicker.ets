@@ -24,7 +24,6 @@
 
 import { RNComponentContext, RNViewBase, } from '@rnoh/react-native-openharmony'
 import { RNC } from "@rnoh/react-native-openharmony/generated/ts"
-
 import { stringToAlignment, stringToFontStyle } from './conversion'
 import Logger from './Logger'
 
