@@ -29,7 +29,7 @@ import {
   RNViewBase,
   ColorSegments,
   convertColorSegmentsToString,
-} from 'rnoh'
+} from '@rnoh/react-native-openharmony'
 
 import { stringToAlignment, stringToFontStyle } from './conversion'
 import Logger from './Logger'
