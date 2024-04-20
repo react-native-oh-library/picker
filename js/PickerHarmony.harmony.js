@@ -17,7 +17,7 @@ import * as React from 'react';
 import {processColor, StyleSheet, View} from 'react-native';
 import RNCPickerNativeComponent, {
   Commands as HarmonyPickerCommands,
-} from '@react-native-picker/picker/js/RNCPickerNativeComponent';
+} from './RNCPickerNativeComponent';
 import type {SyntheticEvent} from 'react-native/Libraries/Types/CoreEventTypes';
 import type {ViewProps} from 'react-native/Libraries/Components/View/ViewPropTypes';
 import type {
