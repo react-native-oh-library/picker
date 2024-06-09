@@ -68,7 +68,6 @@ export struct RNCPicker {
     this.range = this.getRange()
     this.valueMap = this.getValueMap()
     this.selected = this.descriptorWrapper.props.selectedIndex ?? 0
-    console.info(`[clx] picker: ${JSON.stringify(this.descriptorWrapper.props)}`)
   }
 
   aboutToDisappear() {
@@ -124,16 +123,12 @@ export struct RNCPicker {
     };
   }
 
-  _onChange(value: string | string[], index: number | number[]): void {
-    if (typeof value === 'string') {
-      this.value = this.valueMap.get(value)
-    }
-    if (typeof index === 'number') {
-      this.selected = index
-    }
+  _onChange(value: string | string[], index: number | number[] ): void {
+    const newValue : string = (typeof value === 'string' ? this.valueMap.get(value) : this.valueMap.get(value[0])) || '';
+    const newIndex : number = typeof index === 'number' ? index : index[0];
     this.eventEmitter!.emit("change", {
-      newValue: this.value,
-      newIndex: this.selected
+      newValue: newValue,
+      newIndex: newIndex
     })
   }
 
@@ -142,7 +137,7 @@ export struct RNCPicker {
       TextPicker({
         range: this.range, // 选择器的数据选择列表
         // selected: this.selected, // 设置默认选中项在数组中的索引值
-        value: this.value, // 设置默认选中项的值，优先级低于selected
+        // value: this.value, // 设置默认选中项的值，优先级低于selected
       })// .defaultPickerItemHeight() // 设置Picker各选择项的高度
         .disappearTextStyle(this.getTextStyle())// 设置所有选项中最上和最下两个选项的文本颜色、字号、字体粗细
         .textStyle(this.getTextStyle())// 设置所有选项中除了最上、最下及选中项以外的文本颜色、字号、字体粗细
