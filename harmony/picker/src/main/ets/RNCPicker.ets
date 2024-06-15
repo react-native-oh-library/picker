@@ -42,6 +42,8 @@ export struct RNCPicker {
   @State private descriptorWrapper: RNC.RNCPicker.DescriptorWrapper = {} as RNC.RNCPicker.DescriptorWrapper
   private eventEmitter: RNC.RNCPicker.EventEmitter | undefined = undefined
   private cleanUpCallbacks: (() => void)[] = []
+  selectIndex: number = 0
+  selectValue: string = ''
   @State range: string[] = [] // 由label组成，label：Displayed value on the Picker Item
   @State selected: number = 0
   @State value: string | undefined = '' // Actual value on the Picker Item
@@ -126,10 +128,19 @@ export struct RNCPicker {
   _onChange(value: string | string[], index: number | number[] ): void {
     const newValue : string = (typeof value === 'string' ? this.valueMap.get(value) : this.valueMap.get(value[0])) || '';
     const newIndex : number = typeof index === 'number' ? index : index[0];
-    this.eventEmitter!.emit("change", {
-      newValue: newValue,
-      newIndex: newIndex
-    })
+    this.selectIndex = newIndex
+    this.selectValue = newValue
+  }
+  _onTouch(event: TouchEvent) {
+    if (event.type === TouchType.Up) {
+      // 延迟返回数据,避免未返回最新的数据
+      setTimeout(() => {
+        this.eventEmitter!.emit("change", {
+          newValue: this.selectValue,
+          newIndex: this.selectIndex
+        })
+      })
+    }
   }
 
   build() {
@@ -145,6 +156,7 @@ export struct RNCPicker {
         .selectedIndex(this.selected)// 设置默认选中项在数组中的索引值，优先级高于options中的选中值
         .canLoop(false)// 设置是否可循环滚动
         .onChange((value: string | string[], index: number | number[]) => this._onChange(value, index))
+        .onTouch((event: TouchEvent) => this._onTouch(event))
         .width("100%")
         .height("100%")
     }
