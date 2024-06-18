@@ -23,7 +23,7 @@
  */
 
 import { RNComponentContext, RNViewBase, } from '@rnoh/react-native-openharmony'
-import { RNC } from "@rnoh/react-native-openharmony/generated/ts"
+import { RNC } from "./namespace"
 import { stringToAlignment, stringToFontStyle } from './conversion'
 import Logger from './Logger'
 

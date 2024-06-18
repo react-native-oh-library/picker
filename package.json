@@ -8,12 +8,7 @@
   "types": "./typings/index.d.ts",
   "react-native": "js/index.js",
   "harmony": {
-    "alias": "@react-native-picker/picker",
-    "codegenConfig": {
-      "specPaths": [
-        "./js"
-      ]
-    }
+    "alias": "@react-native-picker/picker"
   },
   "scripts": {
     "prepare": "bob build",
