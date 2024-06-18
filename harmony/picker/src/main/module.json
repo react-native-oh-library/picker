@@ -1,0 +1,25 @@
+{
+	"app": {
+		"bundleName": "com.rnoh.tester",
+		"versionCode": 1000000,
+		"versionName": "1.0.0",
+		"minAPIVersion": 50000012,
+		"targetAPIVersion": 50000012,
+		"apiReleaseType": "Canary3",
+		"compileSdkVersion": "5.0.0.22",
+		"compileSdkType": "HarmonyOS",
+		"appEnvironments": [],
+		"bundleType": "app"
+	},
+	"module": {
+		"name": "picker",
+		"type": "har",
+		"deviceTypes": [
+			"default"
+		],
+		"installationFree": false,
+		"virtualMachine": "ark12.0.2.0",
+		"compileMode": "esmodule",
+		"dependencies": []
+	}
+}
