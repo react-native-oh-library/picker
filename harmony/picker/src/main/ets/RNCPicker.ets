@@ -42,6 +42,8 @@ export struct RNCPicker {
   @State private descriptorWrapper: RNC.RNCPicker.DescriptorWrapper = {} as RNC.RNCPicker.DescriptorWrapper
   private eventEmitter: RNC.RNCPicker.EventEmitter | undefined = undefined
   private cleanUpCallbacks: (() => void)[] = []
+  timer: number = 0
+  changing: boolean = false;
   selectIndex: number = 0
   selectValue: string = ''
   @State range: string[] = [] // 由label组成，label：Displayed value on the Picker Item
@@ -69,7 +71,9 @@ export struct RNCPicker {
     this.descriptorWrapper = descriptorWrapper
     this.range = this.getRange()
     this.valueMap = this.getValueMap()
-    this.selected = this.descriptorWrapper.props.selectedIndex ?? 0
+    if (this.selected !== this.descriptorWrapper.props.selectedIndex) {
+      this.selected = this.descriptorWrapper.props.selectedIndex ?? 0
+    }
   }
 
   aboutToDisappear() {
@@ -130,16 +134,26 @@ export struct RNCPicker {
     const newIndex : number = typeof index === 'number' ? index : index[0];
     this.selectIndex = newIndex
     this.selectValue = newValue
+    this.backData()
   }
-  _onTouch(event: TouchEvent) {
-    if (event.type === TouchType.Up) {
-      // 延迟返回数据,避免未返回最新的数据
-      setTimeout(() => {
+  backData() {
+    if (!this.changing) {
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
         this.eventEmitter!.emit("change", {
           newValue: this.selectValue,
           newIndex: this.selectIndex
         })
-      })
+      }, 500)
+    }
+  }
+  _onTouch(event: TouchEvent) {
+    if (event.type === TouchType.Down) {
+      this.changing = true;
+    }
+    if (event.type === TouchType.Up) {
+      this.changing = false;
+      this.backData()
     }
   }
 
