@@ -182,7 +182,7 @@ const PickerHarmonyWithForwardedRef: React.AbstractComponent<
         });
       }
     }
-  }, [selectedValue, nativeSelectedIndex, children]);
+  }, [selectedValue, children]);
 
   const _onChange = React.useCallback(
     (event: $FlowFixMe) => {
