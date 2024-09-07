@@ -22,7 +22,12 @@
  * SOFTWARE.
  */
 
-import { RNComponentContext, RNViewBase, } from '@rnoh/react-native-openharmony'
+import {
+  ColorValue,
+  Descriptor, RNComponentContext, RNViewBase,
+  ViewBaseProps,
+  ViewDescriptorWrapperBase,
+  ViewRawProps, } from '@rnoh/react-native-openharmony';
 import { RNC } from "@rnoh/react-native-openharmony/generated/ts"
 import { stringToAlignment, stringToFontStyle } from './conversion'
 import Logger from './Logger'
@@ -34,29 +39,59 @@ const TAG: string = "[RNOH] RNCPicker"
  */
 export const PICKER_TYPE: string = "RNCPicker"
 
+interface ItemType {
+  label?: string
+  value: string
+}
+
+export interface AutoLayoutViewState {}
+
+export interface AutoLayoutViewRawProps extends ViewRawProps {
+  enabled?: boolean;
+  selectedIndex?: number;
+  items?: ItemType[];
+  color?: ColorValue;
+  fontSize?: number;
+  fontWeight?: FontWeight;
+  fontStyle?: string;
+  fontFamily?: string;
+  selectionColor?: ColorValue;
+}
+
+export const FLASH_LIST_TYPE: string = "AutoLayoutView";
+
+export type AutoLayoutViewDescriptor = Descriptor<"AutoLayoutView", ViewBaseProps, AutoLayoutViewState, AutoLayoutViewRawProps>
+
+class AutoLayoutViewDescriptorWrapper extends ViewDescriptorWrapperBase<"AutoLayoutView", ViewBaseProps, AutoLayoutViewState, AutoLayoutViewRawProps> {
+}
+
 @Component
 export struct RNCPicker {
   public static readonly NAME = RNC.RNCPicker.NAME
   ctx!: RNComponentContext
   tag: number = 0
-  @State private descriptorWrapper: RNC.RNCPicker.DescriptorWrapper = {} as RNC.RNCPicker.DescriptorWrapper
+  @State descriptor: AutoLayoutViewDescriptor = Object() as AutoLayoutViewDescriptor;
+  @State descriptorWrapper: AutoLayoutViewDescriptorWrapper | undefined = undefined;
   private eventEmitter: RNC.RNCPicker.EventEmitter | undefined = undefined
   private cleanUpCallbacks: (() => void)[] = []
   timer: number = 0
   changing: boolean = false;
   selectIndex: number = 0
   selectValue: string = ''
+  @State enable: boolean = true;
   @State range: string[] = [] // 由label组成，label：Displayed value on the Picker Item
   @State selected: number = 0
   @State value: string | undefined = '' // Actual value on the Picker Item
   private valueMap: Map<string, string> = new Map()
 
   aboutToAppear() {
-    this.eventEmitter = new RNC.RNCPicker.EventEmitter(this.ctx.rnInstance, this.tag)
-    this.onDescriptorWrapperChange(this.ctx.descriptorRegistry.findDescriptorWrapperByTag<RNC.RNCPicker.DescriptorWrapper>(this.tag)!)
+    this.eventEmitter = new RNC.RNCPicker.EventEmitter(this.ctx.rnInstance, this.tag);
+    this.descriptor = this.ctx.descriptorRegistry.getDescriptor<AutoLayoutViewDescriptor>(this.tag);
+    this.descriptorWrapper = new AutoLayoutViewDescriptorWrapper(this.descriptor);
+    this.onDescriptorWrapperChange(this.descriptor);
     this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
-      (_descriptor, newDescriptorWrapper) => {
-        this.onDescriptorWrapperChange(newDescriptorWrapper! as RNC.RNCPicker.DescriptorWrapper)
+      (newDescriptor) => {
+        this.onDescriptorWrapperChange(newDescriptor as AutoLayoutViewDescriptor);
       }
     ))
     this.cleanUpCallbacks.push(new RNC.RNCPicker.CommandReceiver(this.ctx.componentCommandReceiver,
@@ -67,12 +102,14 @@ export struct RNCPicker {
     }))
   }
 
-  private onDescriptorWrapperChange(descriptorWrapper: RNC.RNCPicker.DescriptorWrapper) {
-    this.descriptorWrapper = descriptorWrapper
+  private onDescriptorWrapperChange(newDescriptor: AutoLayoutViewDescriptor) {
+    this.descriptor = newDescriptor;
+    this.descriptorWrapper = new AutoLayoutViewDescriptorWrapper(this.descriptor);
     this.range = this.getRange()
     this.valueMap = this.getValueMap()
-    if (this.selected !== this.descriptorWrapper.props.selectedIndex) {
-      this.selected = this.descriptorWrapper.props.selectedIndex ?? 0
+    this.enable = this.descriptor.rawProps.enabled ?? true;
+    if (this.selected !== this.descriptor.rawProps.selectedIndex) {
+      this.selected = this.descriptor.rawProps.selectedIndex ?? 0;
     }
   }
 
@@ -81,7 +118,7 @@ export struct RNCPicker {
   }
 
   getRange(): string[] {
-    let items = this.descriptorWrapper.props.items;
+    let items = this.descriptor.rawProps.items ?? [];
     let range: string[] = [];
     let items_num: number = items.length ?? 0
     for (let i = 0; i < items_num; i++) {
@@ -92,7 +129,7 @@ export struct RNCPicker {
   }
 
   getValueMap(): Map<string, string> {
-    let items = this.descriptorWrapper.props.items;
+    let items = this.descriptor.rawProps.items ?? [];
     let valueMap: Map<string, string> = new Map()
     let items_num: number = items.length ? items.length : 0
     for (let i = 0; i < items_num; i++) {
@@ -104,27 +141,27 @@ export struct RNCPicker {
 
   getTextStyle(): PickerTextStyle {
     return {
-      color: this.descriptorWrapper.props.color ? this.descriptorWrapper.props.color.toRGBAString() : "#ff182431",
+      color: this.descriptor.rawProps.color ? this.descriptor.rawProps.color.toString() : "#ff182431",
       font: {
-        size: this.descriptorWrapper.props.fontSize ?? 16,
-        weight: this.descriptorWrapper.props.fontWeight ?? FontWeight.Normal,
-        style: this.descriptorWrapper.props.fontStyle ? stringToFontStyle(this.descriptorWrapper.props.fontStyle) :
+        size: this.descriptor.rawProps.fontSize ?? 16,
+        weight: this.descriptor.rawProps.fontWeight ?? FontWeight.Normal,
+        style: this.descriptor.rawProps.fontStyle ? stringToFontStyle(this.descriptor.rawProps.fontStyle) :
         FontStyle.Normal,
-        family: this.descriptorWrapper.props.fontFamily ?? 'Arial'
+        family: this.descriptor.rawProps.fontFamily ?? 'Arial'
       },
     };
   }
 
   getSelectionStyle(): PickerTextStyle {
     return {
-      color: this.descriptorWrapper.props.selectionColor ? this.descriptorWrapper.props.selectionColor.toRGBAString() :
+      color: this.descriptor.rawProps.selectionColor ? this.descriptor.rawProps.selectionColor.toString() :
         '#ff007dff',
       font: {
-        size: this.descriptorWrapper.props.fontSize ?? 16,
-        weight: this.descriptorWrapper.props.fontWeight ?? FontWeight.Normal,
-        style: this.descriptorWrapper.props.fontStyle ? stringToFontStyle(this.descriptorWrapper.props.fontStyle) :
+        size: this.descriptor.rawProps.fontSize ?? 16,
+        weight: this.descriptor.rawProps.fontWeight ?? FontWeight.Normal,
+        style: this.descriptor.rawProps.fontStyle ? stringToFontStyle(this.descriptor.rawProps.fontStyle) :
         FontStyle.Normal,
-        family: this.descriptorWrapper.props.fontFamily ?? 'Arial'
+        family: this.descriptor.rawProps.fontFamily ?? 'Arial'
       },
     };
   }
@@ -164,6 +201,7 @@ export struct RNCPicker {
         // selected: this.selected, // 设置默认选中项在数组中的索引值
         // value: this.value, // 设置默认选中项的值，优先级低于selected
       })// .defaultPickerItemHeight() // 设置Picker各选择项的高度
+        .enabled(this.enable)
         .disappearTextStyle(this.getTextStyle())// 设置所有选项中最上和最下两个选项的文本颜色、字号、字体粗细
         .textStyle(this.getTextStyle())// 设置所有选项中除了最上、最下及选中项以外的文本颜色、字号、字体粗细
         .selectedTextStyle(this.getSelectionStyle())// 设置选中项的文本颜色、字号、字体粗细
