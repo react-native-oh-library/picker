@@ -28,6 +28,7 @@ class RNCPickerJSIBinder : public ViewComponentJSIBinder {
         object.setProperty(rt, "fontFamily", true);
         object.setProperty(rt, "testID", true);
         object.setProperty(rt, "themeVariant", true);
+        object.setProperty(rt, "enabled", true);
         object.setProperty(rt, "fakeProp", "Object");
         return object;
     }

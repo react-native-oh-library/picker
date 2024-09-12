@@ -53,6 +53,7 @@ type Props = $ReadOnly<{|
   selectedValue: ?(number | string),
   selectionColor: ?string,
   themeVariant: ?string,
+  enabled: ?Boolean,
 |}>;
 
 type ItemProps = $ReadOnly<{|
@@ -113,6 +114,7 @@ const PickerHarmonyWithForwardedRef: React.AbstractComponent<
     onChange,
     onValueChange,
     style,
+    enabled,
   } = props;
 
   const nativePickerRef = React.useRef<React.ElementRef<
@@ -206,6 +208,7 @@ const PickerHarmonyWithForwardedRef: React.AbstractComponent<
         numberOfLines={parsedNumberOfLines}
         selectedIndex={selectedIndex}
         selectionColor={processColor(selectionColor)}
+        enabled = {enabled}
       />
     </View>
   );

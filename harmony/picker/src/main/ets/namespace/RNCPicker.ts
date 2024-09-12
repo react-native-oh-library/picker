@@ -37,6 +37,7 @@ export namespace RNCPicker {
     fontFamily?: string;
     testID?: string;
     themeVariant?: string;
+    enabled?: boolean;
     fakeProp?: {label?: string, value?: string, textColor?: ColorValue, testID?: string};
   }
   
@@ -108,6 +109,9 @@ export namespace RNCPicker {
         }
     }
     
+    get enabled() {
+      return this.rawProps.enabled ?? true;
+    }
   }
 
   export type Descriptor = ComponentDescriptor<

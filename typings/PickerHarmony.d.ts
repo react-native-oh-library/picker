@@ -20,6 +20,7 @@ export interface PickerHarmonyProps extends ViewProps {
 	testID?: string;
 	numberOfLines?: number;
 	themeVariant ?: string;
+	enabled?: boolean;
 }
 
 declare class PickerHarmony extends React.Component<PickerHarmonyProps, {}> {
