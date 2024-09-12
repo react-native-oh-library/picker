@@ -49,7 +49,7 @@ export type NativeProps = $ReadOnly<{|
   fontFamily?: string,
   testID?: ?string,
   themeVariant?: ?string,
-
+  enabled?: ?boolean,
   // TODO: for some reason codegen does not create `fromRawValue` inline functions for
   // objects inside the `ReadOnlyArray` of items, so we need to explicitly define a prop
   // with this object so those functions are generated
