@@ -27,7 +27,7 @@ import type {
   DescriptorWrapperFactoryByDescriptorTypeCtx,
   DescriptorWrapperFactoryByDescriptorType
 } from '@rnoh/react-native-openharmony/ts';
-import { RNC } from "@rnoh/react-native-openharmony/generated/ts"
+import { RNC } from "./generated/ts"
 
 export class RNCPickerPackage extends RNPackage {
 
