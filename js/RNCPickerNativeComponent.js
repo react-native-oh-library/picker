@@ -21,6 +21,7 @@ import type {ProcessedColorValue} from 'react-native/Libraries/StyleSheet/proces
 
 import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
 import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
+import type {UnsafeMixed} from './codegenUtils';
 
 type PickerIOSChangeEvent = $ReadOnly<{|
   newValue: string,
@@ -36,10 +37,10 @@ type RNCPickerIOSTypeItemType = $ReadOnly<{|
 
 export type NativeProps = $ReadOnly<{|
   ...ViewProps,
-  items: $ReadOnlyArray<RNCPickerIOSTypeItemType>,
+  items: UnsafeMixed<$ReadOnlyArray<RNCPickerIOSTypeItemType>>,
   selectedIndex: Int32,
   selectionColor?: ?ProcessedColorValue,
-  onChange: BubblingEventHandler<PickerIOSChangeEvent>,
+  onChange: UnsafeMixed<BubblingEventHandler<PickerIOSChangeEvent>>,
   color?: ColorValue,
   textAlign?: string,
   numberOfLines?: Int32,
@@ -53,7 +54,7 @@ export type NativeProps = $ReadOnly<{|
   // TODO: for some reason codegen does not create `fromRawValue` inline functions for
   // objects inside the `ReadOnlyArray` of items, so we need to explicitly define a prop
   // with this object so those functions are generated
-  fakeProp?: RNCPickerIOSTypeItemType,
+  fakeProp?: UnsafeMixed<RNCPickerIOSTypeItemType>,
 |}>;
 
 type ComponentType = HostComponent<NativeProps>;

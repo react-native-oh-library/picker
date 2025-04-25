@@ -24,13 +24,14 @@
 
 import {
   ColorValue,
-  Descriptor, RNComponentContext, RNViewBase,
+  Descriptor, RNComponentContext,
+  RNOHLogger,
+  RNViewBase,
   ViewBaseProps,
   ViewDescriptorWrapperBase,
   ViewRawProps, } from '@rnoh/react-native-openharmony';
-import { RNC } from "@rnoh/react-native-openharmony/generated/ts"
+import { RNC } from "./generated/ts"
 import { stringToAlignment, stringToFontStyle } from './conversion'
-import Logger from './Logger'
 
 const TAG: string = "[RNOH] RNCPicker"
 
@@ -83,11 +84,13 @@ export struct RNCPicker {
   @State selected: number = 0
   @State value: string | undefined = '' // Actual value on the Picker Item
   private valueMap: Map<string, string> = new Map()
+  private logger: RNOHLogger | null = null;
 
   aboutToAppear() {
     this.eventEmitter = new RNC.RNCPicker.EventEmitter(this.ctx.rnInstance, this.tag);
     this.descriptor = this.ctx.descriptorRegistry.getDescriptor<AutoLayoutViewDescriptor>(this.tag);
     this.descriptorWrapper = new AutoLayoutViewDescriptorWrapper(this.descriptor);
+    this.logger = this.ctx?.logger.clone(RNC.RNCPicker.NAME);
     this.onDescriptorWrapperChange(this.descriptor);
     this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
       (newDescriptor) => {
@@ -124,7 +127,7 @@ export struct RNCPicker {
     for (let i = 0; i < items_num; i++) {
       range.push(items[i].label ?? '')
     }
-    Logger.debug(TAG, `range: ${range}`)
+    this.logger?.debug(TAG, `range: ${range}`)
     return range
   }
 
@@ -135,7 +138,7 @@ export struct RNCPicker {
     for (let i = 0; i < items_num; i++) {
       valueMap.set(items[i].label ?? '', items[i].value ?? '')
     }
-    Logger.debug(TAG, `valueMap: ${JSON.stringify(valueMap)}`)
+    this.logger?.debug(TAG, `valueMap: ${JSON.stringify(valueMap)}`)
     return valueMap
   }
 

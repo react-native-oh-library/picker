@@ -41,7 +41,8 @@
     "test:detox:ios:bundle:release": "mkdir -p .tmp && react-native bundle --max-workers 4 --platform ios --dev false --entry-file example/index.js --bundle-output .tmp/ios-bundle.js",
     "test:detox:clean": "rimraf example/android/build && rimraf example/android/app/build && rimraf example/android/.gradle && rimraf example/ios/build",
     "ci:publish": "yarn semantic-release",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "codegen-lib": "react-native codegen-lib-harmony --no-safety-check --npm-package-name picker --cpp-output-path ./harmony/picker/src/main/cpp/generated --ets-output-path ./harmony/picker/src/main/ets/generated --arkts-components-spec-paths ./js/RNCPickerNativeComponent.js"
   },
   "keywords": [
     "react-native",
@@ -58,7 +59,8 @@
   },
   "private": false,
   "dependencies": {
-    "@react-native-picker/picker": "2.6.1"
+    "@react-native-picker/picker": "2.6.1",
+    "@rnoh/react-native-harmony-cli": "npm:@react-native-oh/react-native-harmony-cli@^0.0.27"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
