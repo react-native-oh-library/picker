@@ -1,6 +1,6 @@
 # @react-native-oh-tpl/picker
 
-This project is based on [@react-native-picker/picker](https://github.com/react-native-picker/picker)
+This project is based on [@react-native-picker/picker@2.6.1](https://github.com/react-native-picker/picker/tree/v2.6.1)
 
 ## Documentation
 
