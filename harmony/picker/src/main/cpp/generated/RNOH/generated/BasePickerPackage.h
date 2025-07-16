@@ -27,7 +27,7 @@ class BasePickerPackageEventEmitRequestHandler : public EventEmitRequestHandler 
         }
 
         std::vector<std::string> supportedEventNames = {
-            'change'
+            "change"
         };
         if (std::find(supportedEventNames.begin(), supportedEventNames.end(), ctx.eventName) != supportedEventNames.end()) {
             eventEmitter->dispatchEvent(ctx.eventName, ArkJS(ctx.env).getDynamic(ctx.payload));
