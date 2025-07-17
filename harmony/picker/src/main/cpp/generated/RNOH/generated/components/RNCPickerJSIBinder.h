@@ -30,6 +30,7 @@ class RNCPickerJSIBinder : public ViewComponentJSIBinder {
 
     facebook::jsi::Object createBubblingEventTypes(facebook::jsi::Runtime &rt) override {
         facebook::jsi::Object events(rt);
+        events.setProperty(rt, "topChange", createBubblingCapturedEvent(rt, "onChange"));
         return events;
     }
 
